@@ -11,6 +11,11 @@ Original file is located at
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import PowerTransformer
 
 from google.colab import drive
 drive.mount('/content/drive')
@@ -28,5 +33,28 @@ train.info()
 train.describe()
 
 #codificación one-hot encoding para las variables categóricas "Sex" y "Embarked"
-one_hot_encoded_data = pd.get_dummies(train, columns = ['Sex','Embarked'])
-one_hot_encoded_data.head()
+train = pd.get_dummies(train, columns = ['Sex','Embarked'])
+train.head()
+
+train['Age'].fillna(value=train['Age'].mean() , inplace=True)
+X = train[['Fare','Age','Embarked_C','Embarked_Q','Embarked_S']]
+Y = train[['Survived']]
+
+X_train, X_test, Y_train, Y_test = train_test_split(X , Y , test_size=0.2 , random_state = 42)
+
+# Entrenando modelos de regresion logistica
+from sklearn.linear_model import LogisticRegression
+
+logreg=LogisticRegression()
+logreg.fit(X_train,Y_train)
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# Realizar predicciones en el conjunto de prueba
+y_pred = logreg.predict(X_test)
+
+# Evaluar el rendimiento del modelo
+accuracy = accuracy_score(Y_test, y_pred)
+print("Exactitud del modelo:", accuracy)
