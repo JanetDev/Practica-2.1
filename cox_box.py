@@ -49,6 +49,21 @@ X_test_transformed = pt.transform(X_test+0.000001)
 
 pd.DataFrame({'cols': X_train.columns, 'box_cox_lambdas' : pt.lambdas_})
 
+# Entrenando modelos de regresion logistica
+from sklearn.linear_model import LogisticRegression
+
+logreg=LogisticRegression()
+logreg.fit(X_train_transformed,Y_train)
+
+from sklearn.metrics import accuracy_score
+
+# Realizar predicciones en el conjunto de prueba
+y_pred = logreg.predict(X_test_transformed)
+
+# Evaluar el rendimiento del modelo
+accuracy = accuracy_score(Y_test, y_pred)
+print("Exactitud del modelo:", accuracy)
+
 #Before and after comparision for Box-Cox Plot
 X_train_transformed = pd.DataFrame(X_train_transformed,columns = X_train.columns)
 for col in X_train_transformed.columns:
